@@ -1,0 +1,139 @@
+//Ex28.java : Width of a binary tree is the number of nodes on the level that has maximum nodes. 
+//Write a method that returns the width of a binary tree.
+
+class Node
+{
+	public int info;
+	public Node lchild;
+	public Node rchild;
+
+	public Node(int key)
+	{
+		info = key;
+		lchild = null;
+		rchild = null;
+	}
+}//End of class Node
+
+class BinarySearchTree
+{
+	private Node root;
+
+	public BinarySearchTree()
+	{
+		root = null;
+	}//End of BinarySearchTree()
+
+	//Non Recursive insertion
+	public void insert(int key)
+	{
+		Node parent = null;
+		Node p = root;
+
+		while(p != null)
+		{
+			parent = p;
+
+			if(key < p.info)
+				p = p.lchild;
+			else if(key > p.info)
+				p = p.rchild;
+			else
+			{
+				System.out.println(key + " is already there");
+				return;
+			}
+		}
+
+		Node temp = new Node(key);
+
+		if(parent == null)
+			root = temp;
+		else if(key < parent.info)
+			parent.lchild = temp;
+		else
+			parent.rchild = temp;
+	}//End of insert()		
+
+	private void display(Node p, int level)
+	{
+		if(p == null)
+			return;
+
+		display(p.rchild, level+1);
+		System.out.println();
+
+		for(int i=0; i<level; i++)
+			System.out.print("    ");
+		System.out.print(p.info);
+
+		display(p.lchild, level+1);
+	}//End of display()
+
+	public void display()
+	{
+		display(root, 0);
+	}//End of display()		
+
+	private int nodesAtLevel(Node p, int level) 
+	{
+		if(p==null)
+			return 0;
+
+		if(level==0) 
+			return 1;
+
+		return nodesAtLevel(p.lchild,level-1) + nodesAtLevel(p.rchild,level-1);
+	}//End of nodesAtLevel()
+
+	private int height(Node p)
+	{
+		int hLeft, hRight;
+
+		if(p == null)	//Base case
+			return 0;
+
+		hLeft = height(p.lchild);
+		hRight = height(p.rchild);
+
+		if(hLeft > hRight)
+			return 1+hLeft;
+		else
+			return 1+hRight;
+	}//End of height()
+
+	public int width()
+	{
+		int n, max = 0; 
+		for(int i=0; i<height(root); i++)	
+			if((n=nodesAtLevel(root,i)) > max )
+				max = n;
+		return max;	
+	}//End of width()
+
+}//End of class BinarySearchTree
+
+class BinarySearchTreeDemo
+{
+	public static void main(String[] args)
+    {
+		BinarySearchTree bst = new BinarySearchTree();
+
+		//Create the Binary Search Tree
+		bst.insert(80);
+		bst.insert(70);
+		bst.insert(65);
+		bst.insert(75);
+		bst.insert(90);
+		bst.insert(85);
+		bst.insert(95);
+
+		System.out.println("Binary Search Tree is :");
+		bst.display();
+		System.out.println();
+
+		System.out.println("Width = " + bst.width());
+		System.out.println();
+
+    }//End of main()
+}//End of class BinarySearchTreeDemo
